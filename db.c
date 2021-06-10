@@ -65,12 +65,12 @@ typedef struct
 #define ID_OFFSET 0
 #define USERNAME_OFFSET ID_OFFSET + ID_SIZE
 #define EMAIL_OFFSET USERNAME_OFFSET + USERNAME_SIZE
-#define ROW_SIZE ID_SIZE + USERNAME_SIZE + EMAIL_SIZE
+#define ROW_SIZE (ID_SIZE + USERNAME_SIZE + EMAIL_SIZE)
 
 #define PAGE_SIZE 4096
 #define TABLE_MAX_PAGES 100
-#define ROWS_PER_PAGE PAGE_SIZE / ROW_SIZE
-#define TABLE_MAX_ROWS ROWS_PER_PAGE *TABLE_MAX_PAGES
+#define ROWS_PER_PAGE (PAGE_SIZE / ROW_SIZE)
+#define TABLE_MAX_ROWS (ROWS_PER_PAGE * TABLE_MAX_PAGES)
 
 typedef struct
 {
@@ -318,7 +318,7 @@ void *get_page(Pager *pager, uint32_t page_num)
 {
     if (TABLE_MAX_PAGES < page_num)
     {
-        printf("Tried to fetch page number out of bounds.: %d (=TABLE_MAX_PAGES) < %d", TABLE_MAX_PAGES, page_num);
+        printf("Tried to fetch page number out of bounds: %d (=TABLE_MAX_PAGES) < %d", TABLE_MAX_PAGES, page_num);
         exit(EXIT_FAILURE);
     }
 
