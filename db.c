@@ -71,8 +71,15 @@ typedef struct
 
 typedef struct
 {
-    uint32_t num_rows;
+    int file_descriptor;
+    uint32_t file_length;
     void *pages[TABLE_MAX_PAGES];
+} Pager;
+
+typedef struct
+{
+    uint32_t num_rows;
+    Pager *pager;
 } Table;
 
 InputBuffer *new_input_buffer();
