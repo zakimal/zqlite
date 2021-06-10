@@ -100,7 +100,6 @@ void *row_slot(Table *table, uint32_t row_num);
 Pager *pager_open(const char *filename);
 Table *db_open(const char *filename);
 void db_close(Table *table);
-void free_table(Table *table);
 ExecuteResult execute_insert(Statement *statement, Table *table);
 ExecuteResult execute_select(Statement *statement, Table *table);
 
