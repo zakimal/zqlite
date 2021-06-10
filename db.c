@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <fcntl.h>
+#include <errno.h>
 
 typedef struct
 {
@@ -94,6 +95,7 @@ void close_input_buffer(InputBuffer *input_buffer);
 void print_row(Row *row);
 void serialize_row(Row *source, void *destination);
 void deserialize_row(void *source, Row *destination);
+void *get_page(Pager *pager, uint32_t page_num);
 void *row_slot(Table *table, uint32_t row_num);
 Pager *pager_open(const char *filename);
 Table *db_open(const char *filename);
@@ -284,6 +286,42 @@ Pager *pager_open(const char *filename)
     }
 
     return pager;
+}
+
+void *get_page(Pager *pager, uint32_t page_num)
+{
+    if (TABLE_MAX_PAGES < page_num)
+    {
+        printf("Tried to fetch page number out of bounds.: %d (=TABLE_MAX_PAGES) < $d", TABLE_MAX_PAGES, page_num);
+        exit(EXIT_FAILURE);
+    }
+
+    if (pager->pages[page_num] == NULL)
+    {
+        // Cache miss. Allocate memory and load from file.
+        void *page = malloc(PAGE_SIZE);
+        uint32_t num_pages = pager->file_length / PAGE_SIZE;
+
+        if (pager->file_length % PAGE_SIZE)
+        {
+            num_pages += 1;
+        }
+
+        if (page_num <= num_pages)
+        {
+            lseek(pager->file_descriptor, page_num * PAGE_SIZE, SEEK_SET);
+            ssize_t bytes_read = read(pager->file_descriptor, page, PAGE_SIZE);
+            if (bytes_read == -1)
+            {
+                printf("Error reading file: %d\n", errno);
+                exit(EXIT_FAILURE);
+            }
+        }
+
+        pager->pages[page_num] = page;
+    }
+
+    return pager->pages[page_num];
 }
 
 void *row_slot(Table *table, uint32_t row_num)
