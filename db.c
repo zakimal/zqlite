@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include <fcntl.h>
 
 typedef struct
 {
@@ -94,6 +95,7 @@ void print_row(Row *row);
 void serialize_row(Row *source, void *destination);
 void deserialize_row(void *source, Row *destination);
 void *row_slot(Table *table, uint32_t row_num);
+Pager *pager_open(const char *filename);
 Table *db_open(const char *filename);
 void free_table(Table *table);
 ExecuteResult execute_insert(Statement *statement, Table *table);
@@ -255,6 +257,33 @@ void deserialize_row(void *source, Row *destination)
     memcpy(&(destination->id), source + ID_OFFSET, ID_SIZE);
     memcpy(&(destination->username), source + USERNAME_OFFSET, USERNAME_SIZE);
     memcpy(&(destination->email), source + EMAIL_OFFSET, EMAIL_SIZE);
+}
+
+Pager *pager_open(const char *filename)
+{
+    int fd = open(filename,
+                  O_RDWR |      // Read/Write mode
+                      O_CREAT,  // Create file if it does not exist
+                  S_IWUSR |     // User write permission
+                      S_IRUSR); // User read permission
+    if (fd == -1)
+    {
+        printf("Unable to open file.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    off_t file_length = lseek(fd, 0, SEEK_END);
+
+    Pager *pager = malloc(sizeof(Pager));
+    pager->file_descriptor = fd;
+    pager->file_length = file_length;
+
+    for (uint32_t i = 0; i < TABLE_MAX_PAGES; i++)
+    {
+        pager->pages[i] = NULL;
+    }
+
+    return pager;
 }
 
 void *row_slot(Table *table, uint32_t row_num)
