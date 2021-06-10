@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <unistd.h>
 
 typedef struct
 {
@@ -317,7 +318,7 @@ void *get_page(Pager *pager, uint32_t page_num)
 {
     if (TABLE_MAX_PAGES < page_num)
     {
-        printf("Tried to fetch page number out of bounds.: %d (=TABLE_MAX_PAGES) < $d", TABLE_MAX_PAGES, page_num);
+        printf("Tried to fetch page number out of bounds.: %d (=TABLE_MAX_PAGES) < %d", TABLE_MAX_PAGES, page_num);
         exit(EXIT_FAILURE);
     }
 
