@@ -98,6 +98,7 @@ void deserialize_row(void *source, Row *destination);
 void *get_page(Pager *pager, uint32_t page_num);
 void *row_slot(Table *table, uint32_t row_num);
 Pager *pager_open(const char *filename);
+void pager_flush(Pager *pager, uint32_t page_num, uint32_t size);
 Table *db_open(const char *filename);
 void db_close(Table *table);
 ExecuteResult execute_insert(Statement *statement, Table *table);
@@ -286,6 +287,30 @@ Pager *pager_open(const char *filename)
     }
 
     return pager;
+}
+
+void pager_flush(Pager *pager, uint32_t page_num, uint32_t size)
+{
+    if (pager->pages[page_num] == NULL)
+    {
+        printf("Tried to flush null page.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    off_t offset = lseek(pager->file_descriptor, page_num * PAGE_SIZE, SEEK_SET);
+
+    if (offset == -1)
+    {
+        printf("Error seeking: %d.\n", errno);
+        exit(EXIT_FAILURE);
+    }
+
+    ssize_t bytes_written = write(pager->file_descriptor, pager->pages[page_num], size);
+    if (bytes_written == -1)
+    {
+        printf("Error writing: %d.\n", errno);
+        exit(EXIT_FAILURE);
+    }
 }
 
 void *get_page(Pager *pager, uint32_t page_num)
