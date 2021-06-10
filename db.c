@@ -395,15 +395,6 @@ void db_close(Table *table)
     free(table);
 }
 
-void free_table(Table *table)
-{
-    for (int i = 0; table->pages[i]; i++)
-    {
-        free(table->pages[i]);
-    }
-    free(table);
-}
-
 int main(int argc, char *argv[])
 {
     Table *table = new_table();
