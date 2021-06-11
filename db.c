@@ -106,6 +106,7 @@ void deserialize_row(void *source, Row *destination);
 void *get_page(Pager *pager, uint32_t page_num);
 void *row_slot(Table *table, uint32_t row_num);
 void *cursor_value(Cursor *cursor);
+void cursor_advance(Cursor *cursor);
 Pager *pager_open(const char *filename);
 void pager_flush(Pager *pager, uint32_t page_num, uint32_t size);
 Table *db_open(const char *filename);
@@ -368,6 +369,15 @@ void *cursor_value(Cursor *cursor)
     uint32_t row_offset = row_num % ROWS_PER_PAGE;
     uint32_t byte_offset = row_offset * ROW_SIZE;
     return page + byte_offset;
+}
+
+void cursor_advance(Cursor *cursor)
+{
+    cursor->row_num += 1;
+    if (cursor->table->num_rows <= cursor->row_num)
+    {
+        cursor->end_of_table = true;
+    }
 }
 
 Table *db_open(const char *filename)
