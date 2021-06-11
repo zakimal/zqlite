@@ -85,6 +85,13 @@ typedef struct
     Pager *pager;
 } Table;
 
+typedef struct
+{
+    Table *table;
+    uint32_t row_num;
+    bool end_of_table; // is it a position one past the last row in the table?
+} Cursor;
+
 InputBuffer *new_input_buffer();
 MetaCommandResult do_meta_command(InputBuffer *input_buffer, Table *table);
 PrepareResult prepare_insert(InputBuffer *input_buffer, Statement *statement);
