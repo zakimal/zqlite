@@ -111,6 +111,8 @@ Table *db_open(const char *filename);
 void db_close(Table *table);
 ExecuteResult execute_insert(Statement *statement, Table *table);
 ExecuteResult execute_select(Statement *statement, Table *table);
+Cursor *table_start(Table *table);
+Cursor *table_end(Table *table);
 
 InputBuffer *new_input_buffer()
 {
@@ -425,6 +427,26 @@ void db_close(Table *table)
 
     free(pager);
     free(table);
+}
+
+Cursor *table_start(Table *table)
+{
+    Cursor *cursor = malloc(sizeof(Cursor));
+    cursor->table = table;
+    cursor->row_num = 0;
+    cursor->end_of_table = (table->num_rows == 0);
+
+    return cursor;
+}
+
+Cursor *table_end(Table *table)
+{
+    Cursor *cursor = malloc(sizeof(Cursor));
+    cursor->table = table;
+    cursor->row_num = table->num_rows;
+    cursor->end_of_table = true;
+
+    return cursor;
 }
 
 int main(int argc, char *argv[])
