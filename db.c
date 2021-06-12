@@ -92,6 +92,12 @@ typedef struct
     bool end_of_table; // is it a position one past the last row in the table?
 } Cursor;
 
+typedef enum
+{
+    NODE_INTERNAL,
+    NODE_LEAF,
+} NodeType;
+
 InputBuffer *new_input_buffer();
 MetaCommandResult do_meta_command(InputBuffer *input_buffer, Table *table);
 PrepareResult prepare_insert(InputBuffer *input_buffer, Statement *statement);
