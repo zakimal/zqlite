@@ -113,8 +113,8 @@ typedef enum
  * Leaf Node Header Layout
  */
 #define LEAF_NODE_NUM_CELLS_SIZE sizeof(uint32_t)
-#define LEAD_NODE_NUM_CELLS_OFFSET COMMON_NODE_HEADER_SIZE
-#define LEAD_NODE_HEADER_SIZE (COMMON_NODE_HEADER_SIZE + LEAF_NODE_NUM_CELLS_SIZE)
+#define LEAF_NODE_NUM_CELLS_OFFSET COMMON_NODE_HEADER_SIZE
+#define LEAF_NODE_HEADER_SIZE (COMMON_NODE_HEADER_SIZE + LEAF_NODE_NUM_CELLS_SIZE)
 
 InputBuffer *new_input_buffer();
 MetaCommandResult do_meta_command(InputBuffer *input_buffer, Table *table);
