@@ -69,13 +69,12 @@ typedef struct
 
 #define PAGE_SIZE 4096
 #define TABLE_MAX_PAGES 100
-#define ROWS_PER_PAGE (PAGE_SIZE / ROW_SIZE)
-#define TABLE_MAX_ROWS (ROWS_PER_PAGE * TABLE_MAX_PAGES)
 
 typedef struct
 {
     int file_descriptor;
     uint32_t file_length;
+    uint32_t num_pages;
     void *pages[TABLE_MAX_PAGES];
 } Pager;
 
@@ -83,6 +82,7 @@ typedef struct
 {
     uint32_t num_rows;
     Pager *pager;
+    uint32_t root_page_num;
 } Table;
 
 typedef struct
@@ -143,7 +143,7 @@ void *row_slot(Table *table, uint32_t row_num);
 void *cursor_value(Cursor *cursor);
 void cursor_advance(Cursor *cursor);
 Pager *pager_open(const char *filename);
-void pager_flush(Pager *pager, uint32_t page_num, uint32_t size);
+void pager_flush(Pager *pager, uint32_t page_num);
 Table *db_open(const char *filename);
 void db_close(Table *table);
 ExecuteResult execute_insert(Statement *statement, Table *table);
@@ -341,6 +341,13 @@ Pager *pager_open(const char *filename)
     Pager *pager = malloc(sizeof(Pager));
     pager->file_descriptor = fd;
     pager->file_length = file_length;
+    pager->num_pages = file_length / PAGE_SIZE;
+
+    if (file_length % PAGE_SIZE != 0)
+    {
+        printf("DB file is not a whole number of pages. Corrupt file.\n");
+        exit(EXIT_FAILURE);
+    }
 
     for (uint32_t i = 0; i < TABLE_MAX_PAGES; i++)
     {
@@ -350,7 +357,7 @@ Pager *pager_open(const char *filename)
     return pager;
 }
 
-void pager_flush(Pager *pager, uint32_t page_num, uint32_t size)
+void pager_flush(Pager *pager, uint32_t page_num)
 {
     if (pager->pages[page_num] == NULL)
     {
@@ -366,7 +373,7 @@ void pager_flush(Pager *pager, uint32_t page_num, uint32_t size)
         exit(EXIT_FAILURE);
     }
 
-    ssize_t bytes_written = write(pager->file_descriptor, pager->pages[page_num], size);
+    ssize_t bytes_written = write(pager->file_descriptor, pager->pages[page_num], PAGE_SIZE);
     if (bytes_written == -1)
     {
         printf("Error writing: %d.\n", errno);
@@ -405,6 +412,11 @@ void *get_page(Pager *pager, uint32_t page_num)
         }
 
         pager->pages[page_num] = page;
+
+        if (pager->num_pages <= page_num)
+        {
+            pager->num_pages = page_num + 1;
+        }
     }
 
     return pager->pages[page_num];
@@ -444,29 +456,16 @@ Table *db_open(const char *filename)
 void db_close(Table *table)
 {
     Pager *pager = table->pager;
-    uint32_t num_full_pages = table->num_rows / ROWS_PER_PAGE;
 
-    for (uint32_t i = 0; i < num_full_pages; i++)
+    for (uint32_t i = 0; i < pager->num_pages; i++)
     {
         if (pager->pages[i] == NULL)
         {
             continue;
         }
-        pager_flush(pager, i, PAGE_SIZE);
+        pager_flush(pager, i);
         free(pager->pages[i]);
         pager->pages[i] = NULL;
-    }
-
-    uint32_t num_additional_rows = table->num_rows % ROWS_PER_PAGE;
-    if (0 < num_additional_rows)
-    {
-        uint32_t page_num = num_full_pages;
-        if (pager->pages[page_num] != NULL)
-        {
-            pager_flush(pager, page_num, num_additional_rows * ROW_SIZE);
-            free(pager->pages[page_num]);
-            pager->pages[page_num] = NULL;
-        }
     }
 
     int result = close(pager->file_descriptor);
