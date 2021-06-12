@@ -151,6 +151,7 @@ ExecuteResult execute_select(Statement *statement, Table *table);
 Cursor *table_start(Table *table);
 Cursor *table_end(Table *table);
 uint32_t *leaf_node_num_cells(void *node);
+void *leaf_node_cell(void *node, uint32_t cell_num);
 
 InputBuffer *new_input_buffer()
 {
@@ -509,6 +510,11 @@ Cursor *table_end(Table *table)
 uint32_t *leaf_node_num_cells(void *node)
 {
     return node + LEAF_NODE_NUM_CELLS_OFFSET;
+}
+
+void *leaf_node_cell(void *node, uint32_t cell_num)
+{
+    return node + LEAF_NODE_HEADER_SIZE + cell_num * LEAF_NODE_CELL_SIZE;
 }
 
 int main(int argc, char *argv[])
