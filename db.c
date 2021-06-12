@@ -235,7 +235,8 @@ PrepareResult prepare_statement(InputBuffer *input_buffer, Statement *statement)
 
 ExecuteResult execute_insert(Statement *statement, Table *table)
 {
-    if (TABLE_MAX_ROWS <= table->num_rows)
+    void *node = get_page(table->pager, table->root_page_num);
+    if (LEAF_NODE_MAX_CELLS <= (*leaf_node_num_cells(node)))
     {
         return EXECUTE_TABLE_FULL;
     }
@@ -243,8 +244,7 @@ ExecuteResult execute_insert(Statement *statement, Table *table)
     Row *row_to_insert = &(statement->row_to_insert);
     Cursor *cursor = table_end(table);
 
-    serialize_row(row_to_insert, cursor_value(cursor));
-    table->num_rows += 1;
+    leaf_node_insert(cursor, row_to_insert->id, row_to_insert);
 
     free(cursor);
 
