@@ -116,6 +116,17 @@ typedef enum
 #define LEAF_NODE_NUM_CELLS_OFFSET COMMON_NODE_HEADER_SIZE
 #define LEAF_NODE_HEADER_SIZE (COMMON_NODE_HEADER_SIZE + LEAF_NODE_NUM_CELLS_SIZE)
 
+/*
+ * Leaf Node Body Layout
+ */
+#define LEAF_NODE_KEY_SIZE sizeof(uint32_t)
+#define LEAF_NODE_KEY_OFFSET 0
+#define LEAF_NODE_VALUE_SIZE ROW_SIZE
+#define LEAF_NODE_VALUE_OFFSET (LEAF_NODE_KEY_OFFSET + LEAF_NODE_KEY_SIZE)
+#define LEAF_NODE_CELL_SIZE (LEAF_NODE_KEY_SIZE + LEAF_NODE_VALUE_SIZE)
+#define LEAF_NODE_SPACE_FOR_CELLS (PAGE_SIZE - LEAF_NODE_HEADER_SIZE)
+#define LEAF_NODE_MAX_CELLS (LEAF_NODE_SPACE_FOR_CELLS / LEAF_NODE_CELL_SIZE)
+
 InputBuffer *new_input_buffer();
 MetaCommandResult do_meta_command(InputBuffer *input_buffer, Table *table);
 PrepareResult prepare_insert(InputBuffer *input_buffer, Statement *statement);
