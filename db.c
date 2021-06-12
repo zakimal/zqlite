@@ -157,6 +157,7 @@ uint32_t *leaf_node_key(void *node, uint32_t cell_num);
 void *leaf_node_value(void *node, uint32_t cell_num);
 void initialize_leaf_node(void *node);
 void leaf_node_insert(Cursor *cursor, uint32_t key, Row *value);
+void print_constants();
 
 InputBuffer *new_input_buffer()
 {
@@ -175,6 +176,12 @@ MetaCommandResult do_meta_command(InputBuffer *input_buffer, Table *table)
         close_input_buffer(input_buffer);
         db_close(table);
         exit(EXIT_SUCCESS);
+    }
+    else if (strcmp(input_buffer->buffer, ".constants") == 0)
+    {
+        printf("Constants:\n");
+        print_constants();
+        return META_COMMAND_SUCCESS;
     }
     else
     {
@@ -574,6 +581,15 @@ void leaf_node_insert(Cursor *cursor, uint32_t key, Row *value)
     *(leaf_node_num_cells(node)) += 1;
     *(leaf_node_key(node, cursor->cell_num)) = key;
     serialize_row(value, leaf_node_value(node, cursor->cell_num));
+}
+
+void print_constants()
+{
+    printf("ROW_SIZE:                  %d\n", ROW_SIZE);
+    printf("COMMON_NODE_HEADER_SIZE:   %d\n", COMMON_NODE_HEADER_SIZE);
+    printf("LEAF_NODE_HEADER_SIZE:     %d\n", LEAF_NODE_HEADER_SIZE);
+    printf("LEAF_NODE_SPACE_FOR_CELLS: %d\n", LEAF_NODE_SPACE_FOR_CELLS);
+    printf("LEAF_NODE_MAX_CELLS:       %d\n", LEAF_NODE_MAX_CELLS);
 }
 
 int main(int argc, char *argv[])
