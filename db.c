@@ -109,6 +109,13 @@ typedef enum
 #define PARENT_POINTER_OFFSET (IS_ROOT_OFFSET + IS_ROOT_SIZE)
 #define COMMON_NODE_HEADER_SIZE (NODE_TYPE_SIZE + IS_ROOT_SIZE + PARENT_POINTER_SIZE)
 
+/*
+ * Leaf Node Header Layout
+ */
+#define LEAF_NODE_NUM_CELLS_SIZE sizeof(uint32_t)
+#define LEAD_NODE_NUM_CELLS_OFFSET COMMON_NODE_HEADER_SIZE
+#define LEAD_NODE_HEADER_SIZE (COMMON_NODE_HEADER_SIZE + LEAF_NODE_NUM_CELLS_SIZE)
+
 InputBuffer *new_input_buffer();
 MetaCommandResult do_meta_command(InputBuffer *input_buffer, Table *table);
 PrepareResult prepare_insert(InputBuffer *input_buffer, Statement *statement);
