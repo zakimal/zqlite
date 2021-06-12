@@ -150,6 +150,7 @@ ExecuteResult execute_insert(Statement *statement, Table *table);
 ExecuteResult execute_select(Statement *statement, Table *table);
 Cursor *table_start(Table *table);
 Cursor *table_end(Table *table);
+uint32_t *leaf_node_num_cells(void *node);
 
 InputBuffer *new_input_buffer()
 {
@@ -503,6 +504,11 @@ Cursor *table_end(Table *table)
     cursor->end_of_table = true;
 
     return cursor;
+}
+
+uint32_t *leaf_node_num_cells(void *node)
+{
+    return node + LEAF_NODE_NUM_CELLS_OFFSET;
 }
 
 int main(int argc, char *argv[])
