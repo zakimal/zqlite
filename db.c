@@ -154,6 +154,7 @@ uint32_t *leaf_node_num_cells(void *node);
 void *leaf_node_cell(void *node, uint32_t cell_num);
 uint32_t *leaf_node_key(void *node, uint32_t cell_num);
 void *leaf_node_value(void *node, uint32_t cell_num);
+void initialize_leaf_node(void *node);
 
 InputBuffer *new_input_buffer()
 {
@@ -527,6 +528,11 @@ uint32_t *leaf_node_key(void *node, uint32_t cell_num)
 void *leaf_node_value(void *node, uint32_t cell_num)
 {
     return leaf_node_cell(node, cell_num) + LEAF_NODE_KEY_SIZE;
+}
+
+void initialize_leaf_node(void *node)
+{
+    *leaf_node_num_cells(node) = 0;
 }
 
 int main(int argc, char *argv[])
