@@ -158,6 +158,7 @@ void *leaf_node_value(void *node, uint32_t cell_num);
 void initialize_leaf_node(void *node);
 void leaf_node_insert(Cursor *cursor, uint32_t key, Row *value);
 void print_constants();
+void print_leaf_node(void *node);
 
 InputBuffer *new_input_buffer()
 {
@@ -591,6 +592,18 @@ void print_constants()
     printf("LEAF_NODE_CELL_SIZE:       %ld\n", LEAF_NODE_CELL_SIZE);
     printf("LEAF_NODE_SPACE_FOR_CELLS: %ld\n", LEAF_NODE_SPACE_FOR_CELLS);
     printf("LEAF_NODE_MAX_CELLS:       %ld\n", LEAF_NODE_MAX_CELLS);
+}
+
+// for debug
+void print_leaf_node(void *node)
+{
+    uint32_t num_cells = *leaf_node_num_cells(node);
+    printf("leaf (size %d)\n", num_cells);
+    for (uint32_t i = 0; i < num_cells; i++)
+    {
+        uint32_t key = *leaf_node_key(node, i);
+        printf("  - %d: %d\n", i, key);
+    }
 }
 
 int main(int argc, char *argv[])
