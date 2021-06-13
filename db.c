@@ -150,6 +150,7 @@ void db_close(Table *table);
 ExecuteResult execute_insert(Statement *statement, Table *table);
 ExecuteResult execute_select(Statement *statement, Table *table);
 Cursor *table_start(Table *table);
+Cursor *table_find(Table *table, uint32_t key);
 uint32_t *leaf_node_num_cells(void *node);
 void *leaf_node_cell(void *node, uint32_t cell_num);
 uint32_t *leaf_node_key(void *node, uint32_t cell_num);
@@ -533,6 +534,23 @@ Cursor *table_start(Table *table)
     cursor->end_of_table = (num_cells == 0);
 
     return cursor;
+}
+
+Cursor *table_find(Table *table, uint32_t key)
+{
+    uint32_t root_page_num = table->root_page_num;
+    void *root_node = get_page(table->pager, root_page_num);
+
+    if (get_node_type(root_node) == NODE_LEAF)
+    {
+        return leaf_node_find(table, root_page_num, key);
+    }
+    else
+    {
+        // TODO:
+        printf("Need to implement searching an internal node.\n");
+        exit(EXIT_FAILURE);
+    }
 }
 
 uint32_t *leaf_node_num_cells(void *node)
