@@ -38,6 +38,7 @@ typedef enum
 typedef enum
 {
     EXECUTE_SUCCESS,
+    EXECUTE_DUPLICATE_KEY,
     EXECUTE_TABLE_FULL,
 } ExecuteResult;
 
@@ -730,6 +731,9 @@ int main(int argc, char *argv[])
         {
         case (EXECUTE_SUCCESS):
             printf("Executed.\n");
+            break;
+        case (EXECUTE_DUPLICATE_KEY):
+            printf("Error: Duplicate key.\n");
             break;
         case (EXECUTE_TABLE_FULL):
             printf("Error: Table full.\n");
