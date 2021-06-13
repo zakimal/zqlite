@@ -158,6 +158,7 @@ void *leaf_node_value(void *node, uint32_t cell_num);
 void initialize_leaf_node(void *node);
 void leaf_node_insert(Cursor *cursor, uint32_t key, Row *value);
 Cursor *leaf_node_find(Table *table, uint32_t page_num, uint32_t key);
+NodeType get_node_type(void *node);
 void print_constants();
 void print_leaf_node(void *node);
 
@@ -638,6 +639,12 @@ Cursor *leaf_node_find(Table *table, uint32_t page_num, uint32_t key)
 
     cursor->cell_num = min_index;
     return cursor;
+}
+
+NodeType get_node_type(void *node)
+{
+    uint8_t value = *((uint8_t *)(node + NODE_TYPE_OFFSET));
+    return (NodeType)value;
 }
 
 void print_constants()
