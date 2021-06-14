@@ -255,10 +255,6 @@ ExecuteResult execute_insert(Statement *statement, Table *table)
 {
     void *node = get_page(table->pager, table->root_page_num);
     uint32_t num_cells = (*leaf_node_num_cells(node));
-    if (LEAF_NODE_MAX_CELLS <= num_cells)
-    {
-        return EXECUTE_TABLE_FULL;
-    }
 
     Row *row_to_insert = &(statement->row_to_insert);
     uint32_t key_to_insert = row_to_insert->id;
@@ -590,9 +586,8 @@ void leaf_node_insert(Cursor *cursor, uint32_t key, Row *value)
     uint32_t num_cells = *leaf_node_num_cells(node);
     if (LEAF_NODE_MAX_CELLS <= num_cells)
     {
-        // TODO: Node is full.
-        printf("Need to implement splitting a leaf noden");
-        exit(EXIT_FAILURE);
+        leaf_node_split_and_insert(cursor, key, value);
+        return;
     }
 
     if (cursor->cell_num < num_cells)
