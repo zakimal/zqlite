@@ -684,6 +684,7 @@ void *leaf_node_value(void *node, uint32_t cell_num)
 void initialize_leaf_node(void *node)
 {
     set_node_type(node, NODE_LEAF);
+    set_node_root(node, false);
     *leaf_node_num_cells(node) = 0;
 }
 
