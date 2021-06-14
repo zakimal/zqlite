@@ -154,6 +154,7 @@ ExecuteResult execute_insert(Statement *statement, Table *table);
 ExecuteResult execute_select(Statement *statement, Table *table);
 Cursor *table_start(Table *table);
 Cursor *table_find(Table *table, uint32_t key);
+void create_new_root(Table *table, uint32_t right_child_page_num);
 uint32_t *leaf_node_num_cells(void *node);
 void *leaf_node_cell(void *node, uint32_t cell_num);
 uint32_t *leaf_node_key(void *node, uint32_t cell_num);
@@ -559,6 +560,33 @@ Cursor *table_find(Table *table, uint32_t key)
         printf("Need to implement searching an internal node.\n");
         exit(EXIT_FAILURE);
     }
+}
+
+void create_new_root(Table *table, uint32_t right_child_page_num)
+{
+    // Handle splitting the root.
+    // Old root copied to new page, becomes left child.
+    // Address of right child passed in.
+    // Reinitialize root page to contain the new root node.
+    // New root node splits to two children.
+
+    void *root = get_page(table->pager, table->root_page_num);
+    void *right_child = get_page(table->pager, right_child_page_num);
+    uint32_t left_child_page_num = get_unused_page_num(table->pager);
+    void *left_child = get_page(table->pager, left_child_page_num);
+
+    // Left child has data copied from old root.
+    memcpy(left_child, root, PAGE_SIZE);
+    set_node_root(left_child, false);
+
+    // Root node is a new internal node with one key and two children.
+    initialize_internal_node(root);
+    set_node_root(root, true);
+    *internal_node_num_keys(root) = 1;
+    *internal_node_child(root, 0) = left_child_page_num;
+    uint32_t left_child_max_key = get_node_max_key(left_child);
+    *internal_node_key(root, 0) = left_child_max_key;
+    *internal_node_right_child(root) = right_child_page_num;
 }
 
 uint32_t *leaf_node_num_cells(void *node)
