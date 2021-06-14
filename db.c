@@ -173,6 +173,7 @@ Cursor *table_find(Table *table, uint32_t key);
 void create_new_root(Table *table, uint32_t right_child_page_num);
 uint32_t *internal_node_num_keys(void *node);
 uint32_t *internal_node_right_child(void *node);
+uint32_t *internal_node_cell(void *node, uint32_t cell_num);
 uint32_t *leaf_node_num_cells(void *node);
 void *leaf_node_cell(void *node, uint32_t cell_num);
 uint32_t *leaf_node_key(void *node, uint32_t cell_num);
@@ -615,6 +616,11 @@ uint32_t *internal_node_num_keys(void *node)
 uint32_t *internal_node_right_child(void *node)
 {
     return node + INTERNAL_NODE_RIGHT_CHILD_OFFSET;
+}
+
+uint32_t *internal_node_cell(void *node, uint32_t cell_num)
+{
+    return node + INTERNAL_NODE_HEADER_SIZE + cell_num * INTERNAL_NODE_CELL_SIZE;
 }
 
 uint32_t *leaf_node_num_cells(void *node)
