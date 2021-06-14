@@ -171,6 +171,7 @@ ExecuteResult execute_select(Statement *statement, Table *table);
 Cursor *table_start(Table *table);
 Cursor *table_find(Table *table, uint32_t key);
 void create_new_root(Table *table, uint32_t right_child_page_num);
+uint32_t *internal_node_num_keys(void *node);
 uint32_t *leaf_node_num_cells(void *node);
 void *leaf_node_cell(void *node, uint32_t cell_num);
 uint32_t *leaf_node_key(void *node, uint32_t cell_num);
@@ -603,6 +604,11 @@ void create_new_root(Table *table, uint32_t right_child_page_num)
     uint32_t left_child_max_key = get_node_max_key(left_child);
     *internal_node_key(root, 0) = left_child_max_key;
     *internal_node_right_child(root) = right_child_page_num;
+}
+
+uint32_t *internal_node_num_keys(void *node)
+{
+    return node + INTERNAL_NODE_NUM_KEYS_OFFSET;
 }
 
 uint32_t *leaf_node_num_cells(void *node)
