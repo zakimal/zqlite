@@ -142,10 +142,10 @@ describe 'database' do
             "db> Executed.",
             "db> Executed.",
             "db> Tree:",
-            "leaf (size 3)",
-            "  - key=0: value=1",
-            "  - key=1: value=2",
-            "  - key=2: value=3",
+            "- leaf (size 3)",
+            "    - 1",
+            "    - 2",
+            "    - 3",
             "db> "
         ])
     end
