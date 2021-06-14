@@ -141,6 +141,7 @@ void print_row(Row *row);
 void serialize_row(Row *source, void *destination);
 void deserialize_row(void *source, Row *destination);
 void *get_page(Pager *pager, uint32_t page_num);
+uint32_t get_unused_page_num(Pager *pager);
 void *row_slot(Table *table, uint32_t row_num);
 void *cursor_value(Cursor *cursor);
 void cursor_advance(Cursor *cursor);
@@ -448,6 +449,11 @@ void *get_page(Pager *pager, uint32_t page_num)
     }
 
     return pager->pages[page_num];
+}
+
+uint32_t get_unused_page_num(Pager *pager)
+{
+    return pager->num_pages;
 }
 
 void *cursor_value(Cursor *cursor)
