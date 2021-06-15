@@ -584,9 +584,7 @@ Cursor *table_find(Table *table, uint32_t key)
     }
     else
     {
-        // TODO:
-        printf("Need to implement searching an internal node.\n");
-        exit(EXIT_FAILURE);
+        return internal_node_find(cursor->table, cursor->table->root_page_num, key);
     }
 }
 
@@ -787,7 +785,8 @@ void leaf_node_split_and_insert(Cursor *cursor, uint32_t key, Row *value)
     }
     else
     {
-        return internal_node_find(cursor->table, cursor->table->root_page_num, key);
+        printf("Need to implement updating parent after split\n");
+        exit(EXIT_FAILURE);
     }
 }
 
