@@ -753,8 +753,7 @@ void leaf_node_split_and_insert(Cursor *cursor, uint32_t key, Row *value)
     }
     else
     {
-        printf("Need to implement updating parent after split.\n");
-        exit(EXIT_FAILURE);
+        return internal_node_find(table, root_page_num, key);
     }
 }
 
