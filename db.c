@@ -785,7 +785,7 @@ void leaf_node_split_and_insert(Cursor *cursor, uint32_t key, Row *value)
     }
     else
     {
-        printf("Need to implement updating parent after split\n");
+        printf("Need to implement updating parent after split.\n");
         exit(EXIT_FAILURE);
     }
 }
