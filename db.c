@@ -584,7 +584,7 @@ Cursor *table_find(Table *table, uint32_t key)
     }
     else
     {
-        return internal_node_find(cursor->table, cursor->table->root_page_num, key);
+        return internal_node_find(table, root_page_num, key);
     }
 }
 
