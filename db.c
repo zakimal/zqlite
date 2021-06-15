@@ -787,7 +787,7 @@ void leaf_node_split_and_insert(Cursor *cursor, uint32_t key, Row *value)
     }
     else
     {
-        return internal_node_find(table, root_page_num, key);
+        return internal_node_find(cursor->table, cursor->table->root_page_num, key);
     }
 }
 
