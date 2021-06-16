@@ -233,7 +233,7 @@ describe 'database' do
             "(12, user12, person12@example.com)",
             "(13, user13, person13@example.com)",
             "(14, user14, person14@example.com)",
-            "(15, user16, person15@example.com)",
+            "(15, user15, person15@example.com)",
             "Executed.",
             "db> ",
         ])
