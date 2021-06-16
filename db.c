@@ -181,6 +181,7 @@ uint32_t *internal_node_key(void *node, uint32_t key_num);
 Cursor *internal_node_find(Table *table, uint32_t page_num, uint32_t key);
 uint32_t get_node_max_key(void *node);
 uint32_t *leaf_node_num_cells(void *node);
+uint32_t *leaf_node_next_leaf(void *node);
 void *leaf_node_cell(void *node, uint32_t cell_num);
 uint32_t *leaf_node_key(void *node, uint32_t cell_num);
 void *leaf_node_value(void *node, uint32_t cell_num);
@@ -699,6 +700,11 @@ uint32_t get_node_max_key(void *node)
 uint32_t *leaf_node_num_cells(void *node)
 {
     return node + LEAF_NODE_NUM_CELLS_OFFSET;
+}
+
+uint32_t *leaf_node_next_leaf(void *node)
+{
+    return node + LEAF_NODE_NEXT_LEAF_OFFSET;
 }
 
 void *leaf_node_cell(void *node, uint32_t cell_num)
