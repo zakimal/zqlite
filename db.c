@@ -727,6 +727,7 @@ void initialize_leaf_node(void *node)
     set_node_type(node, NODE_LEAF);
     set_node_root(node, false);
     *leaf_node_num_cells(node) = 0;
+    *leaf_node_next_leaf(node) = 0; // no siblings
 }
 
 void initialize_internal_node(void *node)
