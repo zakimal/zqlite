@@ -782,7 +782,8 @@ void leaf_node_split_and_insert(Cursor *cursor, uint32_t key, Row *value)
 
         if (i == cursor->cell_num)
         {
-            serialize_row(value, destination);
+            serialize_row(value, leaf_node_value(destination_node, index_within_node));
+            *leaf_node_key(destination_node, index_within_node) = key;
         }
         else if (cursor->cell_num < i)
         {
