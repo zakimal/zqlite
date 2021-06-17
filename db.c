@@ -668,7 +668,7 @@ uint32_t *internal_node_child(void *node, uint32_t child_num)
 
 uint32_t *internal_node_key(void *node, uint32_t key_num)
 {
-    return internal_node_cell(node, key_num) + INTERNAL_NODE_CHILD_SIZE;
+    return (void *)internal_node_cell(node, key_num) + INTERNAL_NODE_CHILD_SIZE;
 }
 
 void update_internal_node_key(void *node, uint32_t old_key, uint32_t new_key)
@@ -872,7 +872,7 @@ void leaf_node_split_and_insert(Cursor *cursor, uint32_t key, Row *value)
     {
         uint32_t parent_page_num = *node_parent(old_node);
         uint32_t new_max = get_node_max_key(old_node);
-        void *parent = get_page(cursor->table->pager, new_page_num);
+        void *parent = get_page(cursor->table->pager, parent_page_num);
 
         update_internal_node_key(parent, old_max, new_max);
         internal_node_insert(cursor->table, parent_page_num, new_page_num);

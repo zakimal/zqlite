@@ -317,7 +317,7 @@ describe 'database' do
             "        - 5",
             "        - 6",
             "        - 7",
-            "    - key 1",
+            "    - key 7",
             "    - leaf (size 8)",
             "        - 8",
             "        - 9",
