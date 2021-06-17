@@ -194,6 +194,7 @@ NodeType get_node_type(void *node);
 bool is_node_root(void *node);
 void set_node_root(void *node, bool is_root);
 void set_node_type(void *node, NodeType type);
+uint32_t *node_parent(void *node);
 void print_constants();
 void indent(uint32_t level);
 void print_tree(Pager *pager, uint32_t page_num, uint32_t indentation_level);
@@ -899,6 +900,11 @@ void set_node_type(void *node, NodeType type)
 {
     uint8_t value = type;
     *((uint8_t *)(node + NODE_TYPE_OFFSET)) = value;
+}
+
+uint32_t *node_parent(void *node)
+{
+    return node + PARENT_POINTER_OFFSET;
 }
 
 void print_constants()
