@@ -179,6 +179,7 @@ uint32_t *internal_node_cell(void *node, uint32_t cell_num);
 uint32_t *internal_node_child(void *node, uint32_t child_num);
 uint32_t *internal_node_key(void *node, uint32_t key_num);
 void update_internal_node_key(void *node, uint32_t old_key, uint32_t new_key);
+uint32_t internal_node_find_child(void *node, uint32_t page_num, uint32_t key);
 Cursor *internal_node_find(Table *table, uint32_t page_num, uint32_t key);
 uint32_t get_node_max_key(void *node);
 uint32_t *leaf_node_num_cells(void *node);
